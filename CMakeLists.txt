@@ -3,4 +3,4 @@ project(pipinio)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_library(${CMAKE_PROJECT_NAME} STATIC src/CPiPinIO.cpp)
+add_library(pipinio STATIC src/CPiPinIO.cpp)
