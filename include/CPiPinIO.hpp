@@ -6,12 +6,12 @@
 
 #pragma once
 
-
+// standard library
 #include <iostream>
 #include <vector>
 #include <filesystem>
-#include <pigpio.h>
 #include <thread>
+#include <cmath>
 
 // Linux specific includes
 #include <fcntl.h>
@@ -20,6 +20,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <queue>
+
+#include <pigpio.h>
 
 /**
  * @brief A class to provide physical input for the Raspberry Pi.

@@ -136,17 +136,17 @@ bool CPiPinIO::init_hmc5883l(i2c_ch ch, uint address) {
     std::vector<char> buffer(3, '\1');
 
     if (!i2c_read_block(ch, 0x0A, buffer, (int) buffer.size())) {
-        spdlog::error("Error during ID read");
+        std::cout << "Error during HMC5883L ID read" << std::endl;
         return false;
     }
 
     if (buffer.at(0) != 0x48 || buffer.at(1) != 0x34 || buffer.at(2) != 0x33) {
-        spdlog::error("Device ID mismatch.");
+        std::cout << "HMC5883L ID mismatch" << std::endl;
         return false;
     }
 
     if (!i2c_write_byte(ch, 0x02, 0) != 0) {
-        spdlog::error("Mode set error.");
+        std::cout << "Error during HMC5883L mode set" << std::endl;
         return false;
     }
 
@@ -164,12 +164,12 @@ bool CPiPinIO::init_mpu6050(i2c_ch ch, uint address) {
     std::vector<char> buffer(1, '\1');
 
     if (!i2c_read_block(ch, 0x75, buffer, (int) buffer.size())) {
-        spdlog::error("Error during ID read");
+        std::cout << "Error during MPU6050 ID read" << std::endl;
         return false;
     }
 
     if (buffer.at(0) != 0x68) {
-        spdlog::error("MPU6050 not detected.");
+        std::cout << "MPU6050 not found" << std::endl;
         return false;
     }
 
@@ -181,7 +181,7 @@ bool CPiPinIO::init_mpu6050(i2c_ch ch, uint address) {
 
 void CPiPinIO::pca9685_motor_control(motor m, int value) {
     if (!_ready_pca9685) {
-        spdlog::error("Device not ready.");
+        std::cout << "PCA9685 not ready" << std::endl;
         return;
     }
     int absolute = abs(value);
@@ -189,20 +189,20 @@ void CPiPinIO::pca9685_motor_control(motor m, int value) {
     if (!value) {
         switch (m) {
             case M_NE:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NE_F, 0x0000);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NE_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NE_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NE_B, 0x0000);
                 break;
             case M_NW:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NW_F, 0x0000);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NW_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NW_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NW_B, 0x0000);
                 break;
             case M_SE:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SE_F, 0x0000);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SE_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SE_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SE_B, 0x0000);
                 break;
             case M_SW:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SW_F, 0x0000);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SW_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SW_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SW_B, 0x0000);
                 break;
             default:
                 break;
@@ -212,20 +212,20 @@ void CPiPinIO::pca9685_motor_control(motor m, int value) {
     if (value > 0) {
         switch (m) {
             case M_NE:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NE_F, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NE_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NE_F, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NE_B, 0x0000);
                 break;
             case M_NW:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NW_F, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NW_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NW_F, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NW_B, 0x0000);
                 break;
             case M_SE:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SE_F, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SE_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SE_F, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SE_B, 0x0000);
                 break;
             case M_SW:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SW_F, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SW_B, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SW_F, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SW_B, 0x0000);
                 break;
             default:
                 break;
@@ -234,20 +234,20 @@ void CPiPinIO::pca9685_motor_control(motor m, int value) {
     } else {
         switch (m) {
             case M_NE:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NE_B, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NE_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NE_B, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NE_F, 0x0000);
                 break;
             case M_NW:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NW_B, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_NW_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NW_B, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_NW_F, 0x0000);
                 break;
             case M_SE:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SE_B, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SE_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SE_B, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SE_F, 0x0000);
                 break;
             case M_SW:
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SW_B, absolute);
-                i2c_write_word(_ch_pca9685, CControlPi::motor_regs::MREG_SW_F, 0x0000);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SW_B, absolute);
+                i2c_write_word(_ch_pca9685, CPiPinIO::motor_regs::MREG_SW_F, 0x0000);
                 break;
             default:
                 break;
@@ -258,7 +258,7 @@ void CPiPinIO::pca9685_motor_control(motor m, int value) {
 
 bool CPiPinIO::hmc5883l_raw_data(std::vector<char> &data) {
     if (!_ready_hmc5883l) {
-        spdlog::error("Device not ready.");
+        std::cout << "HMC5883L not ready" << std::endl;
         return false;
     }
     if (!i2c_read_block(_ch_hmc5883l, 0x03, data, 6)) {
@@ -270,7 +270,7 @@ bool CPiPinIO::hmc5883l_raw_data(std::vector<char> &data) {
 // MAY BE BLOCKING FOR UP TO 10 MS
 bool CPiPinIO::mpu6050_ypr_data(std::vector<float> &data) {
     if (!_ready_mpu6050) {
-        spdlog::error("Device not ready.");
+        std::cout << "Device not ready." << std::endl;
         return false;
     }
 
@@ -284,14 +284,14 @@ bool CPiPinIO::mpu6050_ypr_data(std::vector<float> &data) {
     // get user_ctrl register
     std::vector<char> user_ctrl(1, '\1');
     if (!i2c_read_block(_ch_mpu6050, 0x6A, user_ctrl, (int) user_ctrl.size())) {
-        spdlog::error("Error during user_ctrl read");
+        std::cout << "Error during MPU6050 user_ctrl read" << std::endl;
         return false;
     }
     // set reset fifo bit
     user_ctrl.at(0) |= 0b00000100;
     // write user_ctrl register
     if (!i2c_write_block(_ch_mpu6050, 0x6A, user_ctrl)) {
-        spdlog::error("Error during user_ctrl write");
+        std::cout << "Error during MPU6050 user_ctrl write" << std::endl;
         return false;
     }
 
@@ -309,14 +309,14 @@ bool CPiPinIO::mpu6050_ypr_data(std::vector<float> &data) {
             // get user_ctrl register
             std::vector<char> user_ctrl(1, '\1');
             if (!i2c_read_block(_ch_mpu6050, 0x6A, user_ctrl, (int) user_ctrl.size())) {
-                spdlog::error("Error during user_ctrl read");
+                std::cout << "Error during MPU6050 user_ctrl read" << std::endl;
                 return false;
             }
             // set reset fifo bit
             user_ctrl.at(0) |= 0b00000100;
             // write user_ctrl register
             if (!i2c_write_block(_ch_mpu6050, 0x6A, user_ctrl)) {
-                spdlog::error("Error during user_ctrl write");
+                std::cout << "Error during MPU6050 user_ctrl write" << std::endl;
                 return false;
             }
         } else if (fifo_num_bytes == 42) {
@@ -427,8 +427,6 @@ int *CPiPinIO::get_i2c_handle(i2c_ch ch) {
             return &_i2c_handle_ch0;
         case i2c_ch::CH1:
             return &_i2c_handle_ch1;
-        default:
-            return nullptr;
     }
 }
 
